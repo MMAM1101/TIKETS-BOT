@@ -630,6 +630,8 @@ client.on('interactionCreate', async (interaction) => {
             return;
         }
 
+        try {
+
         const cfg = loadGuildConfig(guildId);
         const ticketNumber = incrementGuildTicket(guildId);
         const channelName = '\uD83C\uDFAB-ticket-' + ticketNumber;
@@ -740,6 +742,13 @@ client.on('interactionCreate', async (interaction) => {
         await interaction.editReply({
             content: '\u062A\u0645 \u0641\u062A\u062D \u062A\u0630\u0643\u0631\u062A\u0643: <#' + channel.id + '>'
         });
+
+        } catch (err) {
+            console.error('[ticket-create error]', err);
+            try {
+                await interaction.editReply({ content: '\u274C \u062D\u062F\u062B \u062E\u0637\u0623 \u0623\u062B\u0646\u0627\u0621 \u0641\u062A\u062D \u0627\u0644\u062A\u0630\u0643\u0631\u0629. \u062A\u0623\u0643\u062F \u0645\u0646 \u0635\u0644\u0627\u062D\u064A\u0627\u062A \u0627\u0644\u0628\u0648\u062A.' });
+            } catch {}
+        }
 
         return;
     }

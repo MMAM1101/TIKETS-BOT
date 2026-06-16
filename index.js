@@ -208,7 +208,7 @@ client.on('interactionCreate', async (interaction) => {
             ].join('\n');
 
             const embed = new EmbedBuilder()
-                .setTitle('DAY')
+                .setTitle('NEXUS')
                 .setDescription(desc)
                 .setColor(0x5865F2)
                 .setFooter({ text: '\u0627\u062E\u062A\u0631 \u0641\u0626\u0629 \u0645\u0646 \u0627\u0644\u0642\u0627\u0626\u0645\u0629 \u0623\u062F\u0646\u0627\u0647 \u0644\u0641\u062A\u062D \u062A\u0630\u0643\u0631\u062A\u0643 \u2B07\uFE0F' });

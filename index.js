@@ -484,6 +484,45 @@ client.on('interactionCreate', async (interaction) => {
             return;
         }
 
+        if (commandName === 'remove-user') {
+            const channel = interaction.channel;
+            const cfg = loadGuildConfig(guildId);
+            const requester = interaction.member;
+            const isAdmin = requester.permissions.has(PermissionFlagsBits.Administrator);
+            const hasStaffRole = cfg.staffRoleId && requester.roles.cache.has(cfg.staffRoleId);
+            const isTicketOwner = cfg.channelOwners && cfg.channelOwners[channel.id] === requester.id;
+
+            if (!isAdmin && !hasStaffRole && !isTicketOwner) {
+                await interaction.reply({ content: '\u0647\u0630\u0627 \u0627\u0644\u0623\u0645\u0631 \u0644\u0644\u0645\u0648\u0638\u0641\u064A\u0646 \u0648\u0635\u0627\u062D\u0628 \u0627\u0644\u062A\u0630\u0643\u0631\u0629 \u0641\u0642\u0637.', flags: 64 });
+                return;
+            }
+
+            const targetUser = interaction.options.getUser('user');
+            const targetMember = await interaction.guild.members.fetch(targetUser.id).catch(() => null);
+            if (!targetMember) {
+                await interaction.reply({ content: '\u274C \u0644\u0645 \u064A\u062A\u0645 \u0627\u0644\u0639\u062B\u0648\u0631 \u0639\u0644\u0649 \u0647\u0630\u0627 \u0627\u0644\u0639\u0636\u0648.', flags: 64 });
+                return;
+            }
+
+            if (cfg.channelOwners && cfg.channelOwners[channel.id] === targetUser.id) {
+                await interaction.reply({ content: '\u274C \u0644\u0627 \u064A\u0645\u0643\u0646 \u0625\u0632\u0627\u0644\u0629 \u0635\u0627\u062D\u0628 \u0627\u0644\u062A\u0630\u0643\u0631\u0629.', flags: 64 });
+                return;
+            }
+
+            await channel.permissionOverwrites.edit(targetMember.id, {
+                ViewChannel: false,
+                SendMessages: false,
+                ReadMessageHistory: false
+            });
+
+            const removeEmbed = new EmbedBuilder()
+                .setDescription('\u274C \u062A\u0645 \u0625\u0632\u0627\u0644\u0629 <@' + targetUser.id + '> \u0645\u0646 \u0627\u0644\u062A\u0630\u0643\u0631\u0629.')
+                .setColor(0xED4245);
+
+            await interaction.reply({ embeds: [removeEmbed] });
+            return;
+        }
+
         if (commandName === 'rename-ticket') {
             const channel = interaction.channel;
             const cfg = loadGuildConfig(guildId);

@@ -42,7 +42,7 @@ if (!fs.existsSync(configsDir)) {
 }
 
 function defaultGuildConfig() {
-    return { logsChannelId: null, staffRoleId: null, categoryRoles: {}, channelCategories: {}, channelOwners: {}, ticketCount: 0, closedCount: 0, claims: {}, channelClaimants: {} };
+    return { logsChannelId: null, staffRoleId: null, categoryRoles: {}, channelCategories: {}, channelOwners: {}, ticketCount: 0, totalTickets: 0, closedCount: 0, claims: {}, channelClaimants: {} };
 }
 
 function loadGuildConfig(guildId) {
@@ -71,8 +71,9 @@ async function buildTranscript(channel, ticketNum) {
 function incrementGuildTicket(guildId) {
     const cfg = loadGuildConfig(guildId);
     cfg.ticketCount = (cfg.ticketCount || 0) + 1;
+    cfg.totalTickets = (cfg.totalTickets || 0) + 1;
     saveGuildConfig(guildId, cfg);
-    return cfg.ticketCount;
+    return cfg.totalTickets;
 }
 
 const commands = [

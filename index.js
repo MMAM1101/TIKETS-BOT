@@ -153,6 +153,10 @@ const commands = [
         .setName('help')
         .setDescription('\u0639\u0631\u0636 \u062C\u0645\u064A\u0639 \u0627\u0644\u0623\u0648\u0627\u0645\u0631 \u0627\u0644\u0645\u062A\u0627\u062D\u0629')
         .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
+
+    new SlashCommandBuilder()
+        .setName('staff-help')
+        .setDescription('\u0639\u0631\u0636 \u0623\u0648\u0627\u0645\u0631 \u0641\u0631\u064A\u0642 \u0627\u0644\u062F\u0639\u0645'),
 ].map(cmd => cmd.toJSON());
 
 const client = new Client({
@@ -581,6 +585,37 @@ client.on('interactionCreate', async (interaction) => {
                 .setTimestamp();
 
             await interaction.reply({ embeds: [helpEmbed], flags: 64 });
+            return;
+        }
+
+        if (commandName === 'staff-help') {
+            const cfg = loadGuildConfig(guildId);
+            const member = interaction.member;
+            const isAdmin = member.permissions.has(PermissionFlagsBits.Administrator);
+            const hasStaffRole = cfg.staffRoleId && member.roles.cache.has(cfg.staffRoleId);
+
+            const hasCategoryRole = cfg.categoryRoles && Object.values(cfg.categoryRoles).some(rid => member.roles.cache.has(rid));
+
+            if (!isAdmin && !hasStaffRole && !hasCategoryRole) {
+                await interaction.reply({ content: '\u0647\u0630\u0627 \u0627\u0644\u0623\u0645\u0631 \u0644\u0641\u0631\u064A\u0642 \u0627\u0644\u062F\u0639\u0645 \u0641\u0642\u0637.', flags: 64 });
+                return;
+            }
+
+            const staffEmbed = new EmbedBuilder()
+                .setTitle('\uD83D\uDCCB \u0623\u0648\u0627\u0645\u0631 \u0641\u0631\u064A\u0642 \u0627\u0644\u062F\u0639\u0645')
+                .setDescription('\u0647\u0630\u0647 \u0627\u0644\u0623\u0648\u0627\u0645\u0631 \u0627\u0644\u0645\u062A\u0627\u062D\u0629 \u0644\u0643 \u062F\u0627\u062E\u0644 \u0627\u0644\u062A\u0630\u0627\u0643\u0631:')
+                .addFields(
+                    { name: '\uD83D\uDD35 \u0627\u0633\u062A\u0644\u0627\u0645 \u0627\u0644\u062A\u0630\u0643\u0631\u0629', value: '\u0627\u0636\u063A\u0637 \u0632\u0631 **\u0627\u0633\u062A\u0644\u0645** \u062F\u0627\u062E\u0644 \u0623\u064A \u062A\u0630\u0643\u0631\u0629 \u0644\u062A\u0633\u062C\u064A\u0644 \u0627\u0633\u0645\u0643 \u0643\u0645\u0633\u062A\u0644\u0645' },
+                    { name: '`/close-ticket`', value: '\u0625\u063A\u0644\u0627\u0642 \u0627\u0644\u062A\u0630\u0643\u0631\u0629 \u0648\u062D\u0641\u0638 \u0633\u062C\u0644 \u0643\u0627\u0645\u0644 \u0628\u0627\u0644\u0645\u062D\u0627\u062F\u062B\u0627\u062A \u2014 \u0644\u0644\u0645\u0633\u062A\u0644\u0645 \u0641\u0642\u0637' },
+                    { name: '`/rename-ticket`', value: '\u062A\u063A\u064A\u064A\u0631 \u0627\u0633\u0645 \u0642\u0646\u0627\u0629 \u0627\u0644\u062A\u0630\u0643\u0631\u0629 \u2014 \u0644\u0644\u0645\u0633\u062A\u0644\u0645 \u0641\u0642\u0637' },
+                    { name: '`/add-user`', value: '\u0625\u0636\u0627\u0641\u0629 \u0634\u062E\u0635 \u0625\u0644\u0649 \u0627\u0644\u062A\u0630\u0643\u0631\u0629 \u0644\u064A\u0634\u0627\u0647\u062F\u0647\u0627' },
+                    { name: '`/remove-user`', value: '\u0625\u0632\u0627\u0644\u0629 \u0634\u062E\u0635 \u062A\u0645\u062A \u0625\u0636\u0627\u0641\u062A\u0647 \u0645\u0646 \u0627\u0644\u062A\u0630\u0643\u0631\u0629' }
+                )
+                .setColor(0x5865F2)
+                .setFooter({ text: '\u0644\u0627 \u062A\u0646\u0633\u0649 \u062A\u0633\u062A\u0644\u0645 \u0627\u0644\u062A\u0630\u0643\u0631\u0629 \u0623\u0648\u0644\u0627\u064B \u0642\u0628\u0644 \u0623\u064A \u0625\u062C\u0631\u0627\u0621' })
+                .setTimestamp();
+
+            await interaction.reply({ embeds: [staffEmbed], flags: 64 });
             return;
         }
 

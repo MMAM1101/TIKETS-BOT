@@ -746,7 +746,7 @@ client.on('interactionCreate', async (interaction) => {
         } catch (err) {
             console.error('[ticket-create error]', err);
             try {
-                await interaction.editReply({ content: '\u274C \u062D\u062F\u062B \u062E\u0637\u0623 \u0623\u062B\u0646\u0627\u0621 \u0641\u062A\u062D \u0627\u0644\u062A\u0630\u0643\u0631\u0629. \u062A\u0623\u0643\u062F \u0645\u0646 \u0635\u0644\u0627\u062D\u064A\u0627\u062A \u0627\u0644\u0628\u0648\u062A.' });
+                await interaction.editReply({ content: '\u274C \u062E\u0637\u0623: `' + (err && err.message ? err.message : String(err)) + '`' });
             } catch {}
         }
 
